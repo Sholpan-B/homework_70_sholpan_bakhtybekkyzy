@@ -61,17 +61,17 @@ class ProjectForm(forms.ModelForm):
             "description",
             "start_date",
             "end_date",
+            "author"
         ]
 
 
-# class ProjectTaskForm(forms.ModelForm):
-#     status = forms.ModelChoiceField(queryset=Status.objects.all(), initial=Status.objects.filter(name="New"))
-#
-#     class Meta:
-#         model = Task
-#         fields = [
-#             "summary",
-#             "description",
-#             "status",
-#             "type",
-#         ]
+class UserProjectForm(forms.ModelForm):
+    class Meta:
+        model = Project
+        fields = ['author']
+        labels = {
+            'author': 'Author'
+        }
+        widgets = {
+            'author': forms.CheckboxSelectMultiple
+        }
