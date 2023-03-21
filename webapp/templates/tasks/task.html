@@ -3,9 +3,15 @@
 {% block title %}Task{% endblock %}
 
 {% block menu %}
-    <a href="{% url 'task_add' %}">Добавить задачу</a>
-    <a href="{% url 'task_update' task.pk %}">Редактировать</a>
-    <a href="{% url 'task_delete' task.pk %}">Удалить</a>
+    {% if perms.webapp.add_task or project.author == request.user %}
+        <a href="{% url 'task_add' %}">Добавить задачу</a>
+    {% endif %}
+    {% if perms.webapp.change_task or project.author == request.user %}
+        <a href="{% url 'task_update' task.pk %}">Редактировать</a>
+    {% endif %}
+    {% if perms.webapp.delete_task or project.author == request.user %}
+        <a href="{% url 'task_delete' task.pk %}">Удалить</a>
+    {% endif %}
 {% endblock %}
 {% block content %}
     <div class="container">

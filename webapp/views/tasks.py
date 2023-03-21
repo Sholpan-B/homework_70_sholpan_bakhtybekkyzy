@@ -1,4 +1,4 @@
-from django.contrib.auth.mixins import LoginRequiredMixin
+from django.contrib.auth.mixins import LoginRequiredMixin, UserPassesTestMixin
 from django.urls import reverse, reverse_lazy
 from django.views.generic import DetailView, CreateView, UpdateView, DeleteView
 
@@ -6,12 +6,22 @@ from webapp.forms import TaskForm
 from webapp.models import Task
 
 
+class ManagerLeadPermissionMixin(UserPassesTestMixin):
+    def test_func(self):
+        return self.request.user.groups.filter(name__in=['admin', 'Project Manager', 'Team Lead']).exists()
+
+
+class ManagerLeadDeveloperPermissionMixin(UserPassesTestMixin):
+    def test_func(self):
+        return self.request.user.groups.filter(name__in=['admin', 'Project Manager', 'Team Lead', 'Developer']).exists()
+
+
 class TaskDetailView(DetailView):
     template_name = 'tasks/task.html'
     model = Task
 
 
-class TaskAddView(LoginRequiredMixin, CreateView):
+class TaskAddView(ManagerLeadDeveloperPermissionMixin, CreateView):
     template_name = 'tasks/task_add.html'
     model = Task
     form_class = TaskForm
@@ -20,7 +30,7 @@ class TaskAddView(LoginRequiredMixin, CreateView):
         return reverse('task_detail', kwargs={'pk': self.object.pk})
 
 
-class TaskUpdateView(LoginRequiredMixin, UpdateView):
+class TaskUpdateView(ManagerLeadDeveloperPermissionMixin, UpdateView):
     template_name = 'tasks/task_update.html'
     form_class = TaskForm
     model = Task
@@ -30,7 +40,7 @@ class TaskUpdateView(LoginRequiredMixin, UpdateView):
         return reverse('task_detail', kwargs={'pk': self.object.pk})
 
 
-class TaskDeleteView(LoginRequiredMixin, DeleteView):
+class TaskDeleteView(ManagerLeadPermissionMixin, DeleteView):
     template_name = 'tasks/task_confirm_delete.html'
     model = Task
     success_url = reverse_lazy('index')

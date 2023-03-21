@@ -35,18 +35,25 @@
 
                 <td class="col-2">{{ project.start_date }}</td>
                 <td class="col-2">{{ project.end_date}}</td>
-                <td class="col-1"><a class="btn btn-danger" href="{% url 'project_delete' project.pk %}">
+                {% if perms.webapp.delete_project or project.author == request.user %}
+                    <td class="col-1"><a class="btn btn-danger" href="{% url 'project_delete' project.pk %}">
                     Удалить</a></td>
+                {% endif %}
             </tr>
             </tbody>
         </table>
 
 
-        <a class="btn btn-primary mt-2 ml-3 mb-3" href="{% url 'project_update' project.pk %}">Редактировать проект</a>
+        {% if perms.webapp.change_project or project.author == request.user %}
+            <a class="btn btn-primary mt-2 ml-3 mb-3" href="{% url 'project_update' project.pk %}">Редактировать проект</a>
+        {% endif %}
         <br>
         <a class="btn btn-primary mt-2 ml-3 mb-3" href="{% url 'project_task_add' project.pk %}">Добавить задачу к
             проекту</a>
+        {% if perms.webapp.add_userproject or project.author == request.user %}
+            <a class="btn btn-primary mt-2 ml-3 mb-3" href="{% url 'add_user' project.pk %}">Добавить пользователя</a>
 
+        {% endif %}
     {% else %}
         <p class="mt-5 ml-3 fw-bold">Проект не найден</p>
     {% endif %}

@@ -27,14 +27,18 @@
                     </td>
                     <td class="col-2">{{ project.start_date }}</td>
                     <td class="col-2">{{ project.end_date }}</td>
-                    <td class="col-1"><a class="btn btn-danger" href="{% url 'project_delete' project.pk %}">Удалить</a>
+                    {% if perms.webapp.delete_project or project.author == request.user %}
+                        <td class="col-1"><a class="btn btn-danger" href="{% url 'project_delete' project.pk %}">Удалить</a>
                     </td>
+                    {% endif %}
                 </tr>
             {% endfor %}
             <tr>
+                 {% if perms.webapp.add_project or project.author == request.user %}
                 <td class="col-2">
                     <a class="btn btn-primary ml-1 mt-3 mb-5" href="{% url 'add_project' %}">Добавить новый проект</a>
                 </td>
+                 {% endif %}
             </tr>
             </tbody>
         </table>

@@ -1,7 +1,9 @@
 {% extends 'tasks/../base.html' %}
 {% block title %} Список задач {% endblock %}
 {% block menu %}
-    <a href="{% url 'task_add' %}">Добавить задачу</a>
+    {% if perms.webapp.add_task or project.author == request.user %}
+        <a href="{% url 'task_add' %}">Добавить задачу</a>
+    {% endif %}
 {% endblock %}
 {% block content %}
     {% include 'partial/search.html' %}

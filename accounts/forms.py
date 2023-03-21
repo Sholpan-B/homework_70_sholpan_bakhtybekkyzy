@@ -6,6 +6,7 @@ class CustomUserCreationForm(forms.ModelForm):
     password = forms.CharField(label='Пароль', strip=False, required=True, widget=forms.PasswordInput)
     password_confirm = forms.CharField(label='Подтвердите пароль', strip=False, required=True,
                                        widget=forms.PasswordInput)
+    email = forms.EmailField(label='Email', required=True)
 
     def clean(self):
         cleaned_data = super().clean()
